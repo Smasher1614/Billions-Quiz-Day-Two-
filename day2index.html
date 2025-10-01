@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Billions Network Quiz</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #1a1a2e, #16213e, #0f3460);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 20px #7d5fff;
+      padding: 30px;
+      width: 90%;
+      max-width: 750px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      color: #ff77e9;
+      text-shadow: 0 0 12px #ff77e9, 0 0 20px #6a00f4;
+    }
+
+    .question {
+      font-size: 22px;
+      margin: 20px 0;
+      color: #e0e0ff;
+      text-shadow: 0 0 6px #6a00f4;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      background: rgba(50, 50, 80, 0.8);
+      color: #fff;
+      border: 2px solid transparent;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .options button:hover {
+      background: #7d5fff;
+      color: #fff;
+      border: 2px solid #ff77e9;
+      box-shadow: 0 0 15px #7d5fff, 0 0 25px #ff77e9;
+      transform: scale(1.03);
+    }
+
+    .options button.correct {
+      background: #4caf50 !important;
+      border: 2px solid #4caf50;
+      box-shadow: 0 0 15px #4caf50;
+    }
+
+    .options button.wrong {
+      background: #e74c3c !important;
+      border: 2px solid #e74c3c;
+      box-shadow: 0 0 15px #e74c3c;
+    }
+
+    #next-btn {
+      margin-top: 25px;
+      padding: 14px 30px;
+      background: linear-gradient(45deg, #7d5fff, #ff77e9);
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 0 15px #7d5fff;
+      transition: all 0.3s ease;
+    }
+
+    #next-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #ff77e9, 0 0 35px #7d5fff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>✨ Billions Network Quiz ✨</h1>
+    <div id="quiz">
+      <div id="question" class="question"></div>
+      <div id="options" class="options"></div>
+      <button id="next-btn">Next ➡️</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // === Original 5 ===
+      { question: "What is the core purpose of Billions Network?", options: ["Social Media", "AI & Human Verification", "File Storage", "Music Streaming"], correct: 1 },
+      { question: "Which technology does Billions Network use for privacy-preserving verification?", options: ["Blockchain Hashing", "Zero-Knowledge Proofs", "Facial Recognition", "Centralized Databases"], correct: 1 },
+      { question: "What is the Billions Genesis NFT primarily used for?", options: ["Gaming", "Identity Verification & Rewards", "DeFi Lending", "Ticket Booking"], correct: 1 },
+      { question: "Which platforms currently support the Billions App (Beta)?", options: ["Windows & Mac", "Android & iOS", "Linux only", "Web only"], correct: 1 },
+      { question: "Which marketplace features Billions Genesis NFT?", options: ["Opensea", "Blur", "Magic Eden", "Rarible"], correct: 2 },
+      
+      // === New 10 ===
+      { question: "What does Billions Network aim to verify besides humans?", options: ["Physical assets", "AI agents", "Smart contracts", "IoT devices"], correct: 1 },
+      { question: "Which cryptographic method does Billions use to preserve privacy during verification?", options: ["Homomorphic encryption", "Zero-knowledge proofs", "SHA-256 hashing", "Symmetric encryption"], correct: 1 },
+      { question: "What are the 'Power points' in Billions?", options: ["Voting rights tokens", "Reward points earned by users", "API access keys", "Equity shares"], correct: 1 },
+      { question: "Billions raised how much in its private funding rounds?", options: ["$10 million", "$20 million", "$30 million", "$50 million"], correct: 2 },
+      { question: "Which verification firm is linked with Billions’ tech?", options: ["Civic", "Auth0", "Privado ID", "Okta"], correct: 2 },
+      { question: "Billions’ Genesis is associated with which launch product?", options: ["Token launch", "NFT drop", "Airdrop campaign", "Mobile wallet"], correct: 1 },
+      { question: "Billions verifies identity without storing what data?", options: ["Emails", "Biometric data", "Usernames & passwords", "Public keys"], correct: 1 },
+      { question: "Which blockchain is Billions’ Genesis NFT listed on?", options: ["Solana", "Ethereum", "Polygon", "Binance Smart Chain"], correct: 2 },
+      { question: "What’s Billions’ advantage over biometric ID systems?", options: ["Lower fees", "No special hardware", "Faster speed", "Unlimited storage"], correct: 1 },
+      { question: "Which is a way to earn Power points in Billions?", options: ["GPU mining", "Verifying identity", "Running a node", "Buying NFTs"], correct: 1 }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const optionsElement = document.getElementById("options");
+    const nextButton = document.getElementById("next-btn");
+
+    let currentQuestionIndex = 0;
+
+    function showQuestion() {
+      resetState();
+      let currentQuestion = questions[currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
+
+      currentQuestion.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.addEventListener("click", () => selectAnswer(button, index));
+        optionsElement.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.style.display = "none";
+      optionsElement.innerHTML = "";
+    }
+
+    function selectAnswer(button, index) {
+      const correctIndex = questions[currentQuestionIndex].correct;
+      if (index === correctIndex) {
+        button.classList.add("correct");
+      } else {
+        button.classList.add("wrong");
+      }
+      Array.from(optionsElement.children).forEach(btn => {
+        btn.disabled = true;
+        if (questions[currentQuestionIndex].correct === Array.from(optionsElement.children).indexOf(btn)) {
+          btn.classList.add("correct");
+        }
+      });
+      nextButton.style.display = "inline-block";
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        questionElement.textContent = "🎉 You’ve completed the Billions Quiz!";
+        optionsElement.innerHTML = "";
+        nextButton.style.display = "none";
+      }
+    });
+
+    showQuestion();
+  </script>
+</body>
+</html>
